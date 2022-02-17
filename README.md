@@ -2,7 +2,7 @@
 
 `hub.py` is a python program to manage the execution of your python scripts in the console.
 
-The reason why `hub.py` was developed is because running python scripts in the console can be very tedious. To do this, you need to navigate to the directory of your script (e.g. `cd /Users/noxmain/Desktop/`) and run your script with `python3 script.py`.
+The reason why `hub.py` was developed is because running python scripts in the console can be very tedious. To do this, you need to navigate to the directory of your script (e.g. `cd /Users/Noxmain/Desktop/`) and run your script with `python3 script.py`.
 
 But running your scripts with `hub.py` is __much easier__. You only have to drag your script file once into the console and it will be saved in the recently executed scripts, enabling you to run it easily using autocompletion.
 
@@ -39,4 +39,4 @@ Please __do not use__ the escape key or special characters like `Ä` or `§`. Th
 - Uses `cd` when running scripts, so even scripts with dependencies can be executed without problems
 - Displays the runtime after running a script
 - Displays an error message when an error occurs
-- Saves the recent files in the `.hub` file (in the same directory) in json format
+- Saves the recent files in the `.hub` file (in the same directory) in `json` format
