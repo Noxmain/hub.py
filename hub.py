@@ -1,6 +1,6 @@
 # by Noxmain
 # -*- coding: utf-8 -*-
-# v2.5.0
+# v2.5.1
 from getch import getch
 from time import time
 import json
@@ -89,7 +89,9 @@ if __name__ == '__main__':
         height = os.get_terminal_size().lines
         print_window()
         ch = getch()
-        if ch in ["\x1b"]:
+        if ch in ["\t"]:
+            pass
+        elif ch in ["\x1b"]:
             ch = getch() + getch()
             if ch in ["[A"]:  # up
                 in_save = in_input if in_y == -1 else in_save
