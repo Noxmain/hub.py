@@ -1,6 +1,6 @@
 # by Noxmain
 # -*- coding: utf-8 -*-
-# v2.5.1
+# v2.5.2
 from getch import getch
 from time import time
 import json
@@ -89,27 +89,14 @@ if __name__ == '__main__':
         height = os.get_terminal_size().lines
         print_window()
         ch = getch()
-        if ch in ["\t"]:
-            pass
-        elif ch in ["\x1b"]:
-            ch = getch() + getch()
-            if ch in ["[A"]:  # up
-                in_save = in_input if in_y == -1 else in_save
-                in_y = min(in_y + 1, len(recent_names) - 1)
-                in_input = recent_names
-            if ch in ["[B"]:  # down
-                in_y = max(in_y - 1, -1)
-                in_input = recent_names + [in_save]
-            if ch in ["[A", "[B"]:
-                in_input = in_input[in_y]
-                in_suggestion = ""
-                in_x = 5 + len(in_input)
-            if ch in ["[C"]:  # right
-                in_x = min(in_x + 1, 5 + len(in_input), width - 2)
-            if ch in ["[D"]:  # left
-                in_x = max(in_x - 1, 5)
+        if ch in ["\x1b"]:
             in_info = ""
-        elif ch in ["\n", "\r", ""]:
+            while ch in ["\x1b"]:
+                ch = getch()
+            if ch == "[":
+                ch = {"A": "up", "B": "down", "C": "right", "D": "left"}.get(getch(), "invalid")
+
+        if ch in ["\n", "\r", ""]:
             if in_input.lower() in ["\n", "\r", " ", "", "exit", "quit"]:
                 save()
                 clear()
@@ -149,6 +136,25 @@ if __name__ == '__main__':
             in_suggestion = ""
             in_x = 5
             in_y = -1
+
+        elif ch in ["\t", "invalid"]:
+            pass
+        elif ch in ["up", "down", "right", "left"]:
+            if ch in ["up"]:
+                in_save = in_input if in_y == -1 else in_save
+                in_y = min(in_y + 1, len(recent_names) - 1)
+                in_input = recent_names
+            if ch in ["down"]:
+                in_y = max(in_y - 1, -1)
+                in_input = recent_names + [in_save]
+            if ch in ["up", "down"]:
+                in_input = in_input[in_y]
+                in_suggestion = ""
+                in_x = 5 + len(in_input)
+            if ch in ["right"]:
+                in_x = min(in_x + 1, 5 + len(in_input), width - 2)
+            if ch in ["left"]:
+                in_x = max(in_x - 1, 5)
         elif ch in ["\x7f"]:
             in_input = in_input if in_x == 5 else (in_input[:in_x - 6] + in_input[in_x - 5:])
             in_x = max(in_x - 1, 5)

@@ -40,7 +40,7 @@ To change the color theme of the hub, you can use the commands `style` or `color
 
 ## Notice
 
-Please __do not use__ the escape key or special characters like `Ä` or `§`. These can cause strange behavior or crashes.
+Please __do not use__ special characters like `Ä` or `§`. These can cause crashes.
 
 ## Technical features
 
