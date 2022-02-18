@@ -30,6 +30,14 @@ To run a new file (not from the recent files), simply __drag it into your consol
 
 To exit the hub, you can type `exit`, `quit` or simply press Enter (enter nothing).
 
+To change the color theme of the hub, you can use the commands `style` or `color` followed by a style index (e.g. `style 3`). The style indices are:
+- `0`: No color
+- `1`: Default color theme (optimized for light background)
+- `2`: Default color theme (optimized for dark background)
+- `3`: Inverted color theme (optimized for light background)
+- `4`: Inverted color theme (optimized for dark background)
+- `5`: Green color theme (optimized for dark background)
+
 ## Notice
 
 Please __do not use__ the escape key or special characters like `Ä` or `§`. These can cause strange behavior or crashes.
