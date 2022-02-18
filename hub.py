@@ -29,10 +29,15 @@ STYLE = STYLES[1]
 
 
 def load():
+    global STYLE
     if os.path.isfile(".hub"):
         f = open(".hub", "r")
         loaded = json.load(f)
         f.close()
+        try:
+            STYLE = STYLES[loaded.pop(0)[0]]
+        except (IndexError, TypeError):
+            pass
         return map(list, zip(*loaded))
     else:
         return list(), list()
@@ -40,7 +45,7 @@ def load():
 
 def save():
     f = open(".hub", "w")
-    json.dump(list(zip(recent_paths, recent_names)), f)
+    json.dump([(STYLES.index(STYLE), "style")] + list(zip(recent_paths, recent_names)), f)
     f.close()
 
 
@@ -65,8 +70,8 @@ def print_window():
         except IndexError:
             print("│" + " " * (width - 2) + "│")
     print("├" + "─" * (width - len(in_info) - 2) + style(in_info, 1, True) + "┤")
-    s = format_left(" > " + in_input[:width - 6] + STYLE[3] + in_suggestion[len(in_input):], width - 2) + " " * len(STYLE[3])
-    print("│" + style(s[:width + len(STYLE[3]) - 2], 2) + "│")
+    s = format_left(" > " + in_input[:width - 6] + STYLE[3] + in_suggestion[len(in_input):], width - 2)
+    print("│" + style((s + " " * len(STYLE[3]))[:width + len(STYLE[3]) - 2], 2) + "│")
     print("└" + "─" * (width - 2) + "┘", end="", flush=True)
     move(in_x, height - 1)
 
@@ -107,30 +112,36 @@ if __name__ == '__main__':
                 save()
                 clear()
                 exit()
-            in_input = in_input[:-1] if in_input[-1] == " " else in_input
-            in_input = in_input.replace("\\ ", " ")
-            if (in_input in recent_names) or (in_suggestion in recent_names):
-                index = recent_names.index(in_input if in_input in recent_names else in_suggestion)
-                if os.path.isfile(os.path.join(recent_paths[index], recent_names[index])):
-                    recent_names = [recent_names.pop(index)] + recent_names
-                    recent_paths = [recent_paths.pop(index)] + recent_paths
+            elif in_input.lower().split(" ")[0] in ["style", "color"]:
+                try:
+                    STYLE = STYLES[int(in_input.split(" ")[1])]
+                except (ValueError, IndexError):
+                    in_info = " invalid style "
+            else:
+                in_input = in_input[:-1] if in_input[-1] == " " else in_input
+                in_input = in_input.replace("\\ ", " ")
+                if (in_input in recent_names) or (in_suggestion in recent_names):
+                    index = recent_names.index(in_input if in_input in recent_names else in_suggestion)
+                    if os.path.isfile(os.path.join(recent_paths[index], recent_names[index])):
+                        recent_names = [recent_names.pop(index)] + recent_names
+                        recent_paths = [recent_paths.pop(index)] + recent_paths
+                        run()
+                    else:
+                        in_info = " file does not exist anymore "
+                elif os.path.isfile(in_input):
+                    in_input = os.path.abspath(in_input)
+                    tmp = lambda x: os.path.join(x[0], x[1]) == in_input
+                    tmp = list(map(tmp, zip(recent_paths, recent_names)))
+                    if True in tmp:
+                        index = tmp.index(True)
+                        recent_names = [recent_names.pop(index)] + recent_names
+                        recent_paths = [recent_paths.pop(index)] + recent_paths
+                    else:
+                        recent_names = [os.path.basename(in_input)] + recent_names
+                        recent_paths = [os.path.dirname(in_input)] + recent_paths
                     run()
                 else:
-                    in_info = " file does not exist anymore "
-            elif os.path.isfile(in_input):
-                in_input = os.path.abspath(in_input)
-                tmp = lambda x: os.path.join(x[0], x[1]) == in_input
-                tmp = list(map(tmp, zip(recent_paths, recent_names)))
-                if True in tmp:
-                    index = tmp.index(True)
-                    recent_names = [recent_names.pop(index)] + recent_names
-                    recent_paths = [recent_paths.pop(index)] + recent_paths
-                else:
-                    recent_names = [os.path.basename(in_input)] + recent_names
-                    recent_paths = [os.path.dirname(in_input)] + recent_paths
-                run()
-            else:
-                in_info = " invalid path "
+                    in_info = " invalid path "
             in_input = ""
             in_save = ""
             in_suggestion = ""
