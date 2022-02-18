@@ -1,6 +1,6 @@
 # by Noxmain
 # -*- coding: utf-8 -*-
-# v2.4.1
+# v2.5.0
 from getch import getch
 from time import time
 import json
@@ -11,17 +11,21 @@ format_center = lambda string, length: f"{string:^{length}}"
 format_right = lambda string, length: f"{string:>{length}}"
 move = lambda x, y: print(f"\033[{y};{x}H", end="", flush=True)
 clear = lambda: print("\033[H\033[0J", end="", flush=True)
-style = lambda string, *styles: "".join(map(lambda x: STYLES[x], styles)) + string + STYLES["default"]
+style = lambda string, color, bold = False: STYLE[color] + (STYLE[0] if bold else "") + string + "\033[0m"
 
 FIRST = True
 NOTFIRST = lambda: exec("global FIRST\nFIRST = False")
-STYLES = {
-    "red": "\033[31m",
-    "blue": "\033[34m",
-    "gray": "\033[90m",
-    "bold": "\033[1m",
-    "default": "\033[0m",
-}
+
+STYLES = [
+    # [highlight, primary color, secondary color, autocomplete color]
+    ["\033[1m", "", "", ""],  # nocolor
+    ["\033[1m", "\033[31m", "\033[34m", "\033[90m"],  # basic for light
+    ["\033[1m", "\033[91m", "\033[94m", "\033[37m"],  # basic for dark
+    ["\033[1m", "\033[34m", "\033[31m", "\033[90m"],  # anti for light
+    ["\033[1m", "\033[94m", "\033[91m", "\033[37m"],  # anti for dark
+    ["\033[1m", "\033[92m", "\033[92m", "\033[93m"],  # green
+]
+STYLE = STYLES[1]
 
 
 def load():
@@ -45,24 +49,24 @@ def run():
     clear()
     t = time()
     os.system("cd " + recent_paths[0].replace(" ", "\\ ") + "; python3 " + recent_names[0].replace(" ", "\\ "))
-    input(style("Process finished in " + str(time() - t) + " seconds", "red", "bold"))
+    input(style("Process finished in " + str(time() - t) + " seconds", 1, True))
     print("\n" * (height - 3))
 
 
 def print_window():
     NOTFIRST() if FIRST else move(0, 0)
     print("┌" + "─" * (width - 2) + "┐")
-    print("│" + style(format_center("PYTHON HUB", width - 2), "red", "bold") + "│")
+    print("│" + style(format_center("PYTHON HUB", width - 2), 1, True) + "│")
     print("├" + "─" * (width - 2) + "┤")
-    print("│" + style(format_left("Recent files", width - 2), "red", "bold") + "│")
+    print("│" + style(format_left("Recent files", width - 2), 1, True) + "│")
     for i in range(height - 8, -1, -1):
         try:
-            print("│" + style(format_left(recent_names[i], width - 2), "red") + "│")
+            print("│" + style(format_left(recent_names[i], width - 2), 1) + "│")
         except IndexError:
             print("│" + " " * (width - 2) + "│")
-    print("├" + "─" * (width - len(in_info) - 2) + style(in_info, "red", "bold") + "┤")
-    s = format_left(" > " + in_input[:width - 6] + STYLES["gray"] + in_suggestion[len(in_input):], width - 2) + " " * 5
-    print("│" + style(s[:width + 3], "blue") + "│")
+    print("├" + "─" * (width - len(in_info) - 2) + style(in_info, 1, True) + "┤")
+    s = format_left(" > " + in_input[:width - 6] + STYLE[3] + in_suggestion[len(in_input):], width - 2) + " " * len(STYLE[3])
+    print("│" + style(s[:width + len(STYLE[3]) - 2], 2) + "│")
     print("└" + "─" * (width - 2) + "┘", end="", flush=True)
     move(in_x, height - 1)
 
