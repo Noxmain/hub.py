@@ -1,6 +1,6 @@
 # by Noxmain
 # -*- coding: utf-8 -*-
-# Version 2.4
+# v2.4.1
 from getch import getch
 from time import time
 import json
@@ -44,7 +44,7 @@ def run():
     save()
     clear()
     t = time()
-    os.system("cd " + recent_paths[0].replace(" ", "\\ ") + "; python3 " + recent_names[0])
+    os.system("cd " + recent_paths[0].replace(" ", "\\ ") + "; python3 " + recent_names[0].replace(" ", "\\ "))
     input(style("Process finished in " + str(time() - t) + " seconds", "red", "bold"))
     print("\n" * (height - 3))
 
